@@ -10,6 +10,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { QuickActionsGrid } from "@/components/dashboard/quick-actions-grid";
+import { useAuth } from "@/components/auth/auth-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
@@ -54,7 +55,11 @@ const recentActivity = [
 
 export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
+  const { user, isLoading } = useAuth();
   const { virtualAccount } = mockWallet;
+  const accountName = user
+    ? `Amik Verifier / ${user.name}`
+    : virtualAccount.accountName;
 
   function copyAccount() {
     navigator.clipboard.writeText(virtualAccount.accountNumber);
@@ -65,9 +70,17 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">
+          {isLoading
+            ? "Dashboard"
+            : user
+              ? `Welcome back, ${user.name.split(" ")[0]}`
+              : "Dashboard"}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Your wallet, quick actions, and recent activity
+          {user?.email
+            ? `Signed in as ${user.email}`
+            : "Your wallet, quick actions, and recent activity"}
         </p>
       </div>
 
@@ -109,7 +122,7 @@ export default function DashboardPage() {
                       {virtualAccount.accountNumber}
                     </p>
                     <p className="text-xs text-primary-foreground/60">
-                      {virtualAccount.accountName}
+                      {accountName}
                     </p>
                   </div>
                 </div>

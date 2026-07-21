@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -14,6 +14,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { useAuth } from "@/components/auth/auth-context";
 import { useSidebar } from "@/components/dashboard/sidebar-context";
 import { cn } from "@/lib/utils";
 
@@ -38,8 +39,17 @@ export function DashboardSidebar({
   forceExpanded = false,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuth();
   const { collapsed, toggleCollapsed } = useSidebar();
   const isCollapsed = forceExpanded ? false : collapsed;
+
+  async function handleSignOut() {
+    await logout();
+    onNavigate?.();
+    router.push("/sign-in");
+    router.refresh();
+  }
 
   return (
     <aside
@@ -112,12 +122,12 @@ export function DashboardSidebar({
       </nav>
 
       <div className="shrink-0 border-t border-sidebar-border p-3">
-        <Link
-          href="/sign-in"
+        <button
+          type="button"
           title={isCollapsed ? "Sign out" : undefined}
-          onClick={onNavigate}
+          onClick={handleSignOut}
           className={cn(
-            "flex items-center rounded-lg py-2.5 text-sm text-sidebar-foreground/70 transition-all duration-300 ease-in-out hover:bg-white/5 hover:text-sidebar-foreground",
+            "flex w-full items-center rounded-lg py-2.5 text-sm text-sidebar-foreground/70 transition-all duration-300 ease-in-out hover:bg-white/5 hover:text-sidebar-foreground",
             isCollapsed ? "justify-center px-2" : "gap-3 px-3"
           )}
         >
@@ -132,7 +142,7 @@ export function DashboardSidebar({
           >
             Sign out
           </span>
-        </Link>
+        </button>
       </div>
     </aside>
   );
