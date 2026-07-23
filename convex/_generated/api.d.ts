@@ -16,6 +16,7 @@ import type * as auth_sessions from "../auth/sessions.js";
 import type * as auth_signup from "../auth/signup.js";
 import type * as auth_verifyEmail from "../auth/verifyEmail.js";
 import type * as verifications from "../verifications.js";
+import type * as wallet from "../wallet.js";
 
 import type {
   ApiFromModules,
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   "auth/signup": typeof auth_signup;
   "auth/verifyEmail": typeof auth_verifyEmail;
   verifications: typeof verifications;
+  wallet: typeof wallet;
 }>;
 
 /**
